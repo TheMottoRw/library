@@ -127,7 +127,7 @@ if (strlen($_SESSION['alogin']) == 0) {
 
 
                         <div class="form-group">
-                            <label>ISBN Number or Book Title<span style="color:red;">*</span></label>
+                            <label>Book identifier<span style="color:red;">*</span></label>
                             <input class="form-control" type="text" name="booikid" id="bookid" onBlur="getbook()"
                                    required="required"/>
                         </div>

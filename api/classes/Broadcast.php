@@ -1,5 +1,5 @@
 <?php
-//include_once "Database.php";
+include_once "Database.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -13,33 +13,34 @@ class Broadcast
 
     function __construct()
     {
-//        $db = new Database();
-//        $this->conn = $db->connection();
+        $db = new Database();
+        $this->conn = $db->connection();
     }
 
-    function getUser($email)
+    function getStudents()
     {
         $user = null;
-        $qy = $this->conn->prepare("SELECT * FROM users WHERE email=:email");
-        $qy->execute(['email' => $email]);
-        if ($qy->rowCount() > 0) {
-            $user = $qy->fetch(PDO::FETCH_ASSOC);
-            $user['user_type'] = 'user';
-        } else {
-            $qyPolice = $this->conn->prepare("SELECT * FROM police WHERE email=:email");
-            $qyPolice->execute(['email' => $email]);
-            if ($qyPolice->rowCount() > 0) {
-                $user = $qyPolice->fetch();
-                $user['user_type'] = 'police';
-            }
-        }
+        $qy = $this->conn->prepare("SELECT * FROM tblstudents WHERE EmailId!=:email");
+        $qy->execute(['email' => '']);
+        $user = $qy->fetchAll(PDO::FETCH_ASSOC);
         return $user;
 
     }
 
+    function broadcastEmail($datas)
+    {
+        $title = $datas['title'];
+        $message = $datas['message'];
+        $students = $this->getStudents();
+        foreach ($students as $student) {
+            if ($student['EmailId'] == 'mnzroger@gmail.com') {
+               echo $this->sendEmail($student['EmailId'], $student['FullName'], $title, $message);
+            }
+        }
+    }
+
     function sendEmail($to, $toName, $subject, $message)
     {
-        $resetCode = $this->generate();
         $expireDate = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . "+ 1 days"));
 //        $user = $this->getUser($to);
 
@@ -58,8 +59,8 @@ class Broadcast
 
             $mail->IsHTML(true);
             $mail->AddAddress($to, $toName);
-            $mail->SetFrom("hasua.mr@gmail.com", "Manzi Roger SMTP");
-            $mail->AddReplyTo("hasua.mr@gmail.com", "Manzi Roger SMTP");
+            $mail->SetFrom("hasua.mr@gmail.com", "Library management");
+            $mail->AddReplyTo("hasua.mr@gmail.com", "Library management");
 //$mail->AddCC("cc-recipient-email", "cc-recipient-name");
             $mail->Subject = $subject;
             $content = $message;
@@ -68,7 +69,7 @@ class Broadcast
 
             if (!$mail->Send()) {
                 $feed = "error";
-                var_dump($mail);
+//                var_dump($mail);
             } else {
                 $feed = "ok";
             }

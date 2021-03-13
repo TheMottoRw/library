@@ -2,34 +2,8 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if(strlen($_SESSION['alogin'])==0)
-    {   
-header('location:index.php');
-}
-else{ 
-
-if(isset($_POST['update']))
-{
-$bookname=$_POST['bookname'];
-$category=$_POST['category'];
-$author=$_POST['author'];
-$isbn=$_POST['isbn'];
-$price=$_POST['price'];
-$bookid=intval($_GET['bookid']);
-$sql="update  tblbooks set BookName=:bookname,CatId=:category,AuthorId=:author,ISBNNumber=:isbn,BookPrice=:price where id=:bookid";
-$query = $dbh->prepare($sql);
-$query->bindParam(':bookname',$bookname,PDO::PARAM_STR);
-$query->bindParam(':category',$category,PDO::PARAM_STR);
-$query->bindParam(':author',$author,PDO::PARAM_STR);
-$query->bindParam(':isbn',$isbn,PDO::PARAM_STR);
-$query->bindParam(':price',$price,PDO::PARAM_STR);
-$query->bindParam(':bookid',$bookid,PDO::PARAM_STR);
-$query->execute();
-$_SESSION['msg']="Successfully Reserved!";
-header('location:manage-books.php');
 
 
-}
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

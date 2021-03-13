@@ -112,17 +112,21 @@ header('location:manage-books.php');
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Department</th>
                                             <th>Book Name</th>
+                                            <th>Identifier</th>
                                             <th>Category</th>
                                             <th>Author</th>
                                             <th>ISBN</th>
+                                            <th>Number</th>
                                             <th>Price</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-<?php $sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId";
+<?php
+$sql = "SELECT tblbooks.BookName,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid,count(tblbooks.ISBNNumber) as number_of_books from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId AND tblbooks.id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL) GROUP BY tblbooks.ISBNNumber";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -133,10 +137,13 @@ foreach($results as $result)
 {               ?>                                      
                                         <tr class="odd gradeX">
                                             <td class="center"><?php echo htmlentities($cnt);?></td>
+                                            <td class="center"><?php echo htmlentities($result->DepartmentName);?></td>
                                             <td class="center"><?php echo htmlentities($result->BookName);?></td>
+                                            <td class="center"><?php echo htmlentities($result->identifier);?></td>
                                             <td class="center"><?php echo htmlentities($result->CategoryName);?></td>
                                             <td class="center"><?php echo htmlentities($result->AuthorName);?></td>
                                             <td class="center"><?php echo htmlentities($result->ISBNNumber);?></td>
+                                            <td class="center"><?php echo htmlentities($result->number_of_books);?></td>
                                             <td class="center"><?php echo htmlentities($result->BookPrice);?></td>
                                             <td class="center <?= $result->BookStatus=='missing'?'alert alert-danger':''; ?>"><?php echo htmlentities($result->BookStatus);?></td>
                                             <td class="center">

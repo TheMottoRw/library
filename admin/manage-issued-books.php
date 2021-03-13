@@ -95,6 +95,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                         <th>Student Name</th>
                                         <th>Book Name</th>
                                         <th>ISBN</th>
+                                        <th>Identifier</th>
                                         <th>Issued Date</th>
                                         <th>Expected Return on</th>
                                         <th>Returned on</th>
@@ -105,7 +106,7 @@ if (strlen($_SESSION['alogin']) == 0) {
                                     <tbody>
                                     <?php
                                     $results = json_decode(curlGetRequest("issuedbooks.php?cate=get"));
-                                    $sql = "SELECT tblstudents.FullName,tblbooks.BookName,tblbooks.ISBNNumber,tblissuedbookdetails.IssuesDate,tblissuedbookdetails.ReturnDate,tblissuedbookdetails.id as rid from  tblissuedbookdetails join tblstudents on tblstudents.StudentId=tblissuedbookdetails.StudentId join tblbooks on tblbooks.id=tblissuedbookdetails.BookId order by tblissuedbookdetails.id desc";
+                                    $sql = "SELECT tblstudents.FullName,tblbooks.BookName,tblbooks.ISBNNumber,tblbooks.identifier,tblissuedbookdetails.IssuesDate,tblissuedbookdetails.ReturnDate,tblissuedbookdetails.id as rid from  tblissuedbookdetails join tblstudents on tblstudents.StudentId=tblissuedbookdetails.StudentId join tblbooks on tblbooks.id=tblissuedbookdetails.BookId order by tblissuedbookdetails.id desc";
                                     $query = $dbh->prepare($sql);
                                     $query->execute();
                                     //$results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -118,12 +119,13 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                 <td class="center"><?php echo htmlentities($result->FullName); ?></td>
                                                 <td class="center"><?php echo htmlentities($result->BookName); ?></td>
                                                 <td class="center"><?php echo htmlentities($result->ISBNNumber); ?></td>
+                                                <td class="center"><?php echo htmlentities($result->identifier); ?></td>
                                                 <td class="center"><?php echo htmlentities($result->IssuesDate); ?></td>
                                                 <td class="center"><?php echo htmlentities(substr($result->submission_date,0,10)); ?></td>
                                                 <td class="center  <?= $result->RetrunStatus==2?'alert alert-danger':''; ?>"><?php if ($result->RetrunStatus == 0) {
                                                         ?>
                                                         <span style="color:red">
-                                             <?php echo htmlentities("Not Return Yet"); ?>
+                                             <?php echo "<button class='btn  btn-warning btn-xs'>".htmlentities("Not Returned Yet")."</button>"; ?>
                                                 </span>
                                                     <?php } else if($result->RetrunStatus==2){
 

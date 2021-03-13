@@ -80,12 +80,29 @@ $returnedbooks=$query2->rowCount();
                           Books Not Returned Yet
                         </div>
                     </div>
+
+                 <div class="col-md-3 col-sm-3 col-xs-6">
+                     <div class="alert alert-info back-widget-set text-center">
+                         <i class="fa fa-book fa-5x"></i>
+                         <?php
+                         $sql2 ="SELECT id from tblreservedbooks where StudentID=:sid";
+                         $query2 = $dbh -> prepare($sql2);
+                         $query2->bindParam(':sid',$sid,PDO::PARAM_STR);
+                         $query2->execute();
+                         $reservedBooks=$query2->rowCount();
+                         ?>
+
+                         <h3><?php echo htmlentities($reservedBooks);?></h3>
+                         Books Reserved
+                     </div>
+                 </div>
         </div>
 
 
             
     </div>
     </div>
+
      <!-- CONTENT-WRAPPER SECTION END-->
 <?php include('includes/footer.php');?>
       <!-- FOOTER SECTION END-->

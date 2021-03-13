@@ -3,7 +3,7 @@ require_once("includes/config.php");
 if(!empty($_POST["bookid"])) {
   $bookid=$_POST["bookid"];
  
-    $sql ="SELECT BookName,id FROM tblbooks WHERE (ISBNNumber=:bookid) AND status='available' AND id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2))";
+    $sql ="SELECT BookName,id FROM tblbooks WHERE (identifier=:bookid) AND status='available' AND id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL)";
 $query= $dbh -> prepare($sql);
 $query-> bindParam(':bookid', $bookid, PDO::PARAM_STR);
 $query-> execute();

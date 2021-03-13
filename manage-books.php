@@ -107,6 +107,7 @@ header('location:manage-books.php');
                            Books Listing
                         </div>
                         <div class="panel-body">
+                            <div id="reserveResponse"></div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                     <thead>
@@ -116,12 +117,15 @@ header('location:manage-books.php');
                                             <th>Category</th>
                                             <th>Author</th>
                                             <th>ISBN</th>
+                                            <th>Identifier</th>
                                             <th>Price</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-<?php $sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId";
+<?php
+// $sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId";
+ $sql = "SELECT tblbooks.BookName,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId AND tblbooks.id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL) AND tblbooks.id NOT IN (SELECT BookId FROM tblreservedbooks)";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -136,10 +140,11 @@ foreach($results as $result)
                                             <td class="center"><?php echo htmlentities($result->CategoryName);?></td>
                                             <td class="center"><?php echo htmlentities($result->AuthorName);?></td>
                                             <td class="center"><?php echo htmlentities($result->ISBNNumber);?></td>
+                                            <td class="center"><?php echo htmlentities($result->identifier);?></td>
                                             <td class="center"><?php echo htmlentities($result->BookPrice);?></td>
                                             <td class="center">
 
-                                            <a href="reserve-book.php?bookid=<?php echo htmlentities($result->bookid);?>"><button class="btn btn-primary"><i class="fa fa-edit "></i> Reserve</button> 
+                                            <button class="btn btn-sm btn-primary" onclick="confirmBookReservation(<?= "'".$result->bookid."'";?>,<?= "'".$_SESSION['stdid']."'";?>,<?= "'".$result->BookName."'";?>)"><i class="fa fa-clock-o "></i> Reserve</button>
                                             </td>
                                         </tr>
  <?php $cnt=$cnt+1;}} ?>                                      
@@ -171,6 +176,26 @@ foreach($results as $result)
     <script src="assets/js/dataTables/dataTables.bootstrap.js"></script>
       <!-- CUSTOM SCRIPTS  -->
     <script src="assets/js/custom.js"></script>
+<script>
+    function confirmBookReservation(bookid,studentid,booktitle){
+        var confRes = confirm("Confirm to reserve "+booktitle+" for one hour");
+        if(confRes) sendReservation(bookid,studentid);
+    }
+    function sendReservation(bookid,studentid){
+        var params = {'cate':'register','bookid':bookid,'studentid':studentid};
+            jQuery.ajax({
+                url: "api/requests/reservation.php",
+                data:params,
+                dataType:'json',
+                type: "POST",
+                success:function(data){
+                    $("#reserveResponse").html(data.message);
+                },
+                error:function (){}
+            });
+    }
+
+</script>
 </body>
 </html>
 <?php } ?>

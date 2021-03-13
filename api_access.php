@@ -2,6 +2,7 @@
 function curlPostRequest($page,$dataArr){
     $url = 'http://localhost/RUT/library/api/requests/';
     $url.=$page;
+    echo "<script>console.log('".$url."');</script>";
    //create name value pairs seperated by &
    
     $ch = curl_init();  

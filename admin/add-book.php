@@ -11,18 +11,22 @@ else{
 if(isset($_POST['add']))
 {
 $bookname=$_POST['bookname'];
+$department = $_POST['department'];
+$identifier=$_POST['identifier'];
 $category=$_POST['category'];
 $author=$_POST['author'];
 $isbn=$_POST['isbn'];
 $price=$_POST['price'];
-$sql="INSERT INTO  tblbooks(BookName,CatId,AuthorId,ISBNNumber,BookPrice) VALUES(:bookname,:category,:author,:isbn,:price)";
+//$sql="INSERT INTO  tblbooks(BookName,identifier,CatId,AuthorId,ISBNNumber,BookPrice) VALUES(:bookname,:identifier,:category,:author,:isbn,:price)";
+$sql="INSERT INTO  tblbooks SET BookName=:bookname,department=:department,identifier=:identifier,CatId=:category,AuthorId=:author,ISBNNumber=:isbn,BookPrice=:price";
 $query = $dbh->prepare($sql);
-$query->bindParam(':bookname',$bookname,PDO::PARAM_STR);
-$query->bindParam(':category',$category,PDO::PARAM_STR);
-$query->bindParam(':author',$author,PDO::PARAM_STR);
-$query->bindParam(':isbn',$isbn,PDO::PARAM_STR);
-$query->bindParam(':price',$price,PDO::PARAM_STR);
-$query->execute();
+//$query->bindParam(':bookname',$bookname,PDO::PARAM_STR);
+////$query->bindParam(':department',$department,PDO::PARAM_STR);
+//$query->bindParam(':category',$category,PDO::PARAM_STR);
+//$query->bindParam(':author',$author,PDO::PARAM_STR);
+//$query->bindParam(':isbn',$isbn,PDO::PARAM_STR);
+//$query->bindParam(':price',$price,PDO::PARAM_STR);
+$query->execute(['bookname'=>$bookname,'identifier'=>$identifier,'category'=>$category,'author'=>$author,'isbn'=>$isbn,'price'=>$price,'department'=>$department]);
 $lastInsertId = $dbh->lastInsertId();
 if($lastInsertId)
 {
@@ -31,7 +35,7 @@ header('location:manage-books.php');
 }
 else 
 {
-$_SESSION['error']="Something went wrong. Please try again!!";
+$_SESSION['error']="Something went wrong. Please try again!! ".$lastInsertId."--".json_encode($query->errorInfo());
 header('location:manage-books.php');
 }
 
@@ -67,7 +71,7 @@ url: "check_availabilityISBN.php",
 data:'isbnid='+$("#isbnid").val(),
 type: "POST",
 success:function(data){
-$("#isbn-availability-status").html(data);
+// $("#isbn-availability-status").html(data);
 $("#loaderIcon").hide();
 },
 error:function (){}
@@ -99,7 +103,29 @@ Book Info
 <label>Book Name<span style="color:red;">*</span></label>
 <input class="form-control" type="text" name="bookname" autocomplete="off"  required />
 </div>
+    <div class="form-group">
+        <label>Identifier<span style="color:red;">*</span></label>
+        <input class="form-control" type="text" name="identifier" autocomplete="off"  required />
+    </div>
 
+    <div class="form-group">
+        <label>Department</label>
+        <select class="form-control" name="department" required="required">
+            <option value=""> Select Department</option>
+            <?php
+            $sql = "SELECT * from  department";
+            $query = $dbh -> prepare($sql);
+            $query->execute();
+            $results=$query->fetchAll(PDO::FETCH_OBJ);
+            if($query->rowCount() > 0)
+            {
+                foreach($results as $result)
+                {               ?>
+                    <option value="<?php echo htmlentities($result->id);?>"><?php echo htmlentities($result->Dep_Name);?></option>
+                <?php }} ?>
+
+        </select>
+    </div>
 <div class="form-group">
 <label> Category<span style="color:red;">*</span></label>
 <select class="form-control" name="category" required="required">

@@ -48,7 +48,7 @@ else{?>
                       <div class="alert alert-success back-widget-set text-center">
                             <i class="fa fa-book fa-5x"></i>
 <?php 
-$sql ="SELECT id from tblbooks ";
+$sql ="SELECT tblbooks.id from tblbooks INNER JOIN tblcategory ON tblcategory.id=tblbooks.CatId";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);

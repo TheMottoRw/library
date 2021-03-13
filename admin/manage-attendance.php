@@ -2,23 +2,14 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
+include_once'../api_access.php';
+
 if(strlen($_SESSION['alogin'])==0)
     {   
 header('location:index.php');
 }
-else{
-if(isset($_GET['del']))
-{
-$id=$_GET['del'];
-$sql = "delete from attendance  WHERE id=:id";
-$query = $dbh->prepare($sql);
-$query -> bindParam(':id',$id, PDO::PARAM_STR);
-$query -> execute();
-$_SESSION['delmsg']="Author deleted";
-header('location:manage-attendance.php');
-
-}
-
+    $reqAttendaces = curlGetRequest("attendance.php?cate=load");
+    $attendances = json_decode($reqAttendaces);
 
     ?>
 <!DOCTYPE html>
@@ -51,54 +42,7 @@ header('location:manage-attendance.php');
             <div class="col-md-12">
                 <h4 class="header-line">Attendance</h4>
     </div>
-     <div class="row">
-    <?php if($_SESSION['error']!="")
-    {?>
-<div class="col-md-6">
-<div class="alert alert-danger" >
- <strong>Error :</strong> 
- <?php echo htmlentities($_SESSION['error']);?>
-<?php echo htmlentities($_SESSION['error']="");?>
-</div>
-</div>
-<?php } ?>
-<?php if($_SESSION['msg']!="")
-{?>
-<div class="col-md-6">
-<div class="alert alert-success" >
- <strong>Success :</strong> 
- <?php echo htmlentities($_SESSION['msg']);?>
-<?php echo htmlentities($_SESSION['msg']="");?>
-</div>
-</div>
-<?php } ?>
-<?php if($_SESSION['updatemsg']!="")
-{?>
-<div class="col-md-6">
-<div class="alert alert-success" >
- <strong>Success :</strong> 
- <?php echo htmlentities($_SESSION['updatemsg']);?>
-<?php echo htmlentities($_SESSION['updatemsg']="");?>
-</div>
-</div>
-<?php } ?>
-
-
-   <?php if($_SESSION['delmsg']!="")
-    {?>
-<div class="col-md-6">
-<div class="alert alert-success" >
- <strong>Success :</strong> 
- <?php echo htmlentities($_SESSION['delmsg']);?>
-<?php echo htmlentities($_SESSION['delmsg']="");?>
-</div>
-</div>
-<?php } ?>
-
-</div>
-
-
-        </div>
+         </div>
             <div class="row">
                 <div class="col-md-12">
                     <!-- Advanced Tables -->
@@ -107,6 +51,7 @@ header('location:manage-attendance.php');
                            Attendance of students who attended Library
                         </div>
                         <div class="panel-body">
+                            <div id="response"></div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                                     <thead>
@@ -121,24 +66,18 @@ header('location:manage-attendance.php');
                                         </tr>
                                     </thead>
                                     <tbody>
-<?php $sql = "SELECT * from  Attendance ORDER BY EntryDate DESC";
-$query = $dbh -> prepare($sql);
-$query->execute();
-$results=$query->fetchAll(PDO::FETCH_OBJ);
-$cnt=1;
-if($query->rowCount() > 0)
-{
-foreach($results as $result)
+<?php
+foreach($attendances as $k=>$result)
 {               ?>                                      
                                         <tr class="odd gradeX">
-                                            <td class="center"><?php echo htmlentities($cnt);?></td>
+                                            <td class="center"><?php echo $k+1;?></td>
                                             <td class="center"><?php echo htmlentities($result->StudentId);?></td>
                                             <td class="center"><?php echo htmlentities($result->Full_Name);?></td>  
                                             <td class="center"><?php echo htmlentities($result->Department);?></td>         
                                             <td class="center"><?php echo htmlentities($result->EntryDate);?></td>
-                                            <td class="center"><?php if($result->LeavingDate=="")
+                                            <td class="center"><?php if($result->LeavingDate==null)
                                             {?>
-                                            <span style="color:red">
+                                            <span class="btn btn-danger btn-xs">
                                              <?php   echo htmlentities("Not Yet Out"); ?>
                                                 </span>
                                             <?php }else {
@@ -148,11 +87,12 @@ foreach($results as $result)
 }
                                             ?></td>
                                             <td class="center">
-
-                                            <a href="edit-attendance.php?id=<?php echo htmlentities($result->id);?>"><button class="btn btn-primary"><i class="fa fa-edit "></i>Leave</button> 
+                                                <?php if($result->LeavingDate==null){?>
+                                            <button class="btn btn-xs btn-primary " onclick="leave(<?= $result->id ?>)"><i class="fa fa-share "></i>Leave</button>
+                                                <?php } ?>
                                             </td>
                                         </tr>
- <?php $cnt=$cnt+1;}} ?>                                      
+ <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -181,6 +121,24 @@ foreach($results as $result)
     <script src="assets/js/dataTables/dataTables.bootstrap.js"></script>
       <!-- CUSTOM SCRIPTS  -->
     <script src="assets/js/custom.js"></script>
+<script>
+    function leave(id){
+        var isLeaving = confirm("Confirm attendee is leaving or has left");
+        if(isLeaving){
+            jQuery.ajax({
+                url: "../api/requests/attendance.php",
+                data: {cate: 'leave', id: id},
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+                    $("#response").html(data.message);
+                    setTimeout(function (){window.location='manage-attendance.php';},1500)
+                },
+                error: function () {
+                }
+            });
+        }
+    }
+</script>
 </body>
 </html>
-<?php } ?>

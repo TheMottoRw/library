@@ -1,10 +1,12 @@
 <?php
 include_once "Database.php";
+include_once "Reservation.php";
 class Helper{
     function __construct()
     {
         $this->db = new Database();
         $this->conn = $this->db->getInstance();
+        $this->reservation = new Reservation();
     }
     function adminExistance(){
         $qy = $this->conn->prepare("SELECT * FROM admin");
@@ -21,6 +23,7 @@ class Helper{
     public function login($datas){
 //        return $datas;
         $this->adminExistance();
+        $this->reservation->cancelExpiredReservation();
         $response = ['status'=>'ok','data'=>[],'message'=>"<div class='alert alert-success'>Successful logged in</div>"];
         $qy = $this->conn->prepare("SELECT * FROM admin WHERE (UserName=:phone OR AdminEmail=:phone) AND Password=:pwd");
         $qy->execute(['phone'=>$datas['username'],'pwd'=>md5($datas['password'])]);
@@ -35,7 +38,7 @@ class Helper{
                 $response['user_info']['category'] = 'student';
             }else{
                 $response['status'] = 'fail';
-                $response['message'] = "<div class='alert alert-danger'>Wrong phone number or password</div>";
+                $response['message'] = "<div class='alert alert-danger'>Wrong phone number or password ".json_encode([$qyResident->rowCount()])."</div>";
             }
         }
         return $response;

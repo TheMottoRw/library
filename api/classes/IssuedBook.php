@@ -115,7 +115,7 @@ class IssuedBook
         if (isset($datas['start']) && isset($datas['end'])) {
             $additionalWhere .= ($additionalWhere == "" ? " WHERE " : " AND ") . " ib.IssuesDate BETWEEN '" . $datas['start'] . "' AND '" . $datas['end'] . "'";
         }
-        $qy = $this->conn->prepare("SELECT * FROM tblbooks b INNER JOIN tblissuedbookdetails ib ON ib.BookId=b.id " . $additionalWhere);// 0 Pending,1 Returned,2 Missing
+        $qy = $this->conn->prepare("SELECT ib.*,b.*,s.FullName,c.CategoryName,d.Dep_Name,a.AuthorName FROM tblbooks b INNER JOIN tblissuedbookdetails ib ON ib.BookId=b.id  INNER JOIN tblstudents s ON s.StudentId=ib.StudentId left join department d on d.id=b.department join tblcategory c on c.id=b.CatId join tblauthors a on a.id=b.AuthorId " . $additionalWhere);// 0 Pending,1 Returned,2 Missing
         $qy->execute(['status' => $status]);
         return $qy->fetchAll(PDO::FETCH_ASSOC);
     }

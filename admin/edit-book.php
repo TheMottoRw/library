@@ -11,14 +11,16 @@ else{
 if(isset($_POST['update']))
 {
 $bookname=$_POST['bookname'];
+$identifier=$_POST['identifier'];
 $category=$_POST['category'];
 $author=$_POST['author'];
 $isbn=$_POST['isbn'];
 $price=$_POST['price'];
 $bookid=intval($_GET['bookid']);
-$sql="update  tblbooks set BookName=:bookname,CatId=:category,AuthorId=:author,ISBNNumber=:isbn,BookPrice=:price where id=:bookid";
+$sql="update  tblbooks set BookName=:bookname,identifier=:identifier,CatId=:category,AuthorId=:author,ISBNNumber=:isbn,BookPrice=:price where id=:bookid";
 $query = $dbh->prepare($sql);
 $query->bindParam(':bookname',$bookname,PDO::PARAM_STR);
+$query->bindParam(':identifier',$identifier,PDO::PARAM_STR);
 $query->bindParam(':category',$category,PDO::PARAM_STR);
 $query->bindParam(':author',$author,PDO::PARAM_STR);
 $query->bindParam(':isbn',$isbn,PDO::PARAM_STR);
@@ -87,6 +89,10 @@ foreach($results as $result)
 <div class="form-group">
 <label>Book Name<span style="color:red;">*</span></label>
 <input class="form-control" type="text" name="bookname" value="<?php echo htmlentities($result->BookName);?>" required />
+</div>
+    <div class="form-group">
+    <label>Identifier<span style="color:red;">*</span></label>
+    <input class="form-control" type="text" name="identifier" value="<?php echo htmlentities($result->identifier);?>" required />
 </div>
 
 <div class="form-group">

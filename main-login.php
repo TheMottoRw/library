@@ -52,10 +52,13 @@ if ($_SESSION['login'] != '') {
                                         $_SESSION['id'] = $userInfo->id;
                                         if ($userInfo->category == 'admin'){
                                             $_SESSION['alogin']=$userInfo->UserName;
+                                            $_SESSION['name'] = $userInfo->FullName;
                                             $_SESSION['emailid'] = $userInfo->AdminEmail;
                                         header('location:admin/dashboard.php');
                                         }else {
                                             $_SESSION['login'] = $userInfo->EmailId;
+                                            $_SESSION['name'] = $userInfo->FullName;
+                                            $_SESSION['stdid'] = $userInfo->StudentId;
                                             if($userInfo->Status==1)
                                             {
                                                 header('location:dashboard.php');

@@ -68,6 +68,7 @@ header('location:manage-books.php');
                                             <th>#</th>
                                             <th>Book Name</th>
                                             <th>ISBN </th>
+                                            <th>Identifier </th>
                                             <th>Issued Date</th>
                                             <th>Return Date</th>
                                             <th>Charges Per Day(RWF)</th>
@@ -76,7 +77,7 @@ header('location:manage-books.php');
                                     <tbody>
 <?php 
 $sid=$_SESSION['stdid'];
-$sql="SELECT tblbooks.BookName,tblbooks.ISBNNumber,tblissuedbookdetails.IssuesDate,tblissuedbookdetails.ReturnDate,tblissuedbookdetails.id as rid,tblissuedbookdetails.fine from  tblissuedbookdetails join tblstudents on tblstudents.StudentId=tblissuedbookdetails.StudentId join tblbooks on tblbooks.id=tblissuedbookdetails.BookId where tblstudents.StudentId=:sid order by tblissuedbookdetails.id desc";
+$sql="SELECT tblbooks.BookName,tblbooks.ISBNNumber,tblbooks.identifier,tblissuedbookdetails.IssuesDate,tblissuedbookdetails.ReturnDate,tblissuedbookdetails.id as rid,tblissuedbookdetails.fine from  tblissuedbookdetails join tblstudents on tblstudents.StudentId=tblissuedbookdetails.StudentId join tblbooks on tblbooks.id=tblissuedbookdetails.BookId where tblstudents.StudentId=:sid order by tblissuedbookdetails.id desc";
 $query = $dbh -> prepare($sql);
 $query-> bindParam(':sid', $sid, PDO::PARAM_STR);
 $query->execute();
@@ -90,11 +91,12 @@ foreach($results as $result)
                                             <td class="center"><?php echo htmlentities($cnt);?></td>
                                             <td class="center"><?php echo htmlentities($result->BookName);?></td>
                                             <td class="center"><?php echo htmlentities($result->ISBNNumber);?></td>
+                                            <td class="center"><?php echo htmlentities($result->identifier);?></td>
                                             <td class="center"><?php echo htmlentities($result->IssuesDate);?></td>
                                             <td class="center"><?php if($result->ReturnDate=="")
                                             {?>
                                             <span style="color:red">
-                                             <?php   echo htmlentities("Not Return Yet"); ?>
+                                             <?php   echo "<button class='btn btn-xs btn-danger'>".htmlentities("Not Returned Yet")."</button>"; ?>
                                                 </span>
                                             <?php } else {
                                             echo htmlentities($result->ReturnDate);

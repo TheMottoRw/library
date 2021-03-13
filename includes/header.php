@@ -12,7 +12,7 @@
 {
 ?> 
             <div class="right-div">
-                <a href="logout.php" class="btn btn-danger pull-right">LOG ME OUT</a>
+                <a href="logout.php" class="btn btn-danger pull-right">LOG ME OUT(<?= $_SESSION['name']; ?>)</a>
             </div>
             <?php }?>
         </div>
@@ -39,7 +39,8 @@
                                 </ul>
                             </li>
                             <li><a href="issued-books.php">Issued Books</a></li>
-                          
+                            <li><a href="reserved-book.php">Reserved books</a></li>
+
 
                         </ul>
                     </div>

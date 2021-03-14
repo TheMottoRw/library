@@ -150,7 +150,7 @@ $reservations = json_decode($reqReservations);
                             $("#removeReserveResponse").html(data.message);
                             setTimeout(function(){
                                 window.location='reserved-books.php';
-                            },1500);
+                            },15000);
                         },
                         error:function (){}
                     });

@@ -108,6 +108,7 @@ error_reporting(0);
 <?php
 
 //$sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.RegDate,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId WHERE tblbooks.status='available' AND tblbooks.id NOT IN (SELECT DISTINCT(BookId) FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL)";
+$dbh->query("SET SESSION sql_mode = 'TRADITIONAL'");
 $sql = "SELECT tblbooks.BookName,tblbooks.RegDate,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid,count(tblbooks.ISBNNumber) as number_of_books from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId AND tblbooks.id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL) GROUP BY tblbooks.ISBNNumber";
 $query = $dbh -> prepare($sql);
 $query->execute();

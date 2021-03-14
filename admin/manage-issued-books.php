@@ -130,23 +130,27 @@ if (strlen($_SESSION['alogin']) == 0) {
                                                     <?php } else if($result->RetrunStatus==2){
 
 
-                                                        echo "[Missing]";
+                                                        echo "<button class='btn btn-xs btn-danger'>Missing</button>";
                                                     }else echo htmlentities($result->ReturnDate);
                                                     ?></td>
                                                 <td class="center"><?php echo $result->RetrunStatus == 0 ? $result->estimated_fine." RWF" : $result->fine." RWF"; ?></td>
                                                 <td class="center">
-                                                    <a href="update-issue-bookdeails.php?rid=<?php echo htmlentities($result->rid); ?>">
-                                                        <button class="btn btn-primary"><i class="fa fa-edit "></i> Edit
-                                                        </button>
-                                                    </a>
-                                                    <?php if ($result->RetrunStatus != 0) { ?>
+<!--                                                    <a href="update-issue-bookdeails.php?rid=--><?php //echo htmlentities($result->rid); ?><!--">-->
+<!--                                                        <button class="btn btn-primary"><i class="fa fa-edit "></i> Edit-->
+<!--                                                        </button>-->
+<!--                                                    </a>-->
+                                                    <?php if ($result->RetrunStatus != 1) { ?>
                                                         <button class="btn btn-success" onclick="confirmSubmission(<?= $result->rid;?>,<?= $result->estimated_fine;?>)"><i class="fa fa-check-square "></i>
                                                             Submit
                                                         </button>
+
+                                                    <?php }
+                                                    if($result->RetrunStatus !=2){
+                                                    ?>
                                                         <button class="btn btn-danger"  onclick="setModalStolen(<?= $result->rid;?>,<?= $result->book_id;?>,<?= ($result->BookPrice + $result->estimated_fine);?>,<?= "'".$result->BookName."'"; ?>)"><i class="fa fa-try "></i>
                                                             Stolen
                                                         </button>
-                                                    <?php } ?>
+                                                        <?php } ?>
                                                 </td>
                                             </tr>
                                             <?php $cnt = $cnt + 1;

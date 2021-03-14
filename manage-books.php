@@ -125,7 +125,8 @@ header('location:manage-books.php');
                                     <tbody>
 <?php
 // $sql = "SELECT tblbooks.BookName,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.id as bookid from  tblbooks join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId";
- $sql = "SELECT tblbooks.BookName,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId AND tblbooks.id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL) AND tblbooks.id NOT IN (SELECT BookId FROM tblreservedbooks)";
+//$dbh->query("SET SESSION sql_mode = 'TRADITIONAL'");
+$sql = "SELECT tblbooks.BookName,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId AND tblbooks.id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL) AND tblbooks.id NOT IN (SELECT BookId FROM tblreservedbooks)";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);

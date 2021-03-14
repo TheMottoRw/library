@@ -126,7 +126,8 @@ header('location:manage-books.php');
                                     </thead>
                                     <tbody>
 <?php
-$sql = "SELECT tblbooks.BookName,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid,count(tblbooks.ISBNNumber) as number_of_books from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId AND tblbooks.id NOT IN (SELECT BookId FROM tblissuedbookdetails WHERE RetrunStatus IN (0,2) AND BookId IS NOT NULL) GROUP BY tblbooks.ISBNNumber";
+$dbh->query("SET SESSION sql_mode = 'TRADITIONAL'");
+$sql = "SELECT tblbooks.BookName,department.Dep_Name as DepartmentName,tblbooks.identifier,tblcategory.CategoryName,tblauthors.AuthorName,tblbooks.ISBNNumber,tblbooks.BookPrice,tblbooks.status as BookStatus,tblbooks.id as bookid,count(tblbooks.ISBNNumber) as number_of_books from  tblbooks left join department on department.id=tblbooks.department join tblcategory on tblcategory.id=tblbooks.CatId join tblauthors on tblauthors.id=tblbooks.AuthorId GROUP BY tblbooks.ISBNNumber";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);

@@ -19,7 +19,7 @@ class Reservation
             $qy = $this->conn->prepare("INSERT INTO tblreservedbooks SET BookId=:bookid,StudentId=:studentid");
             $qy->execute(['bookid' => $datas['bookid'], 'studentid' => $datas['studentid']]);
         } else {
-            $feed = ['status' => 'ok', "message" => "<div class='alert alert-danger'>Book not available for reservation</div>"];
+            $feed = ['status' => 'ok', "message" => "<div class='alert alert-info'>Book not available for reservation</div>"];
         }
         return $feed;
     }
@@ -51,14 +51,14 @@ class Reservation
 
         if($qy0->rowCount()!=0){
             $reservationInfo = $qy0->fetch(PDO::FETCH_ASSOC);
+//            return $reservationInfo;
             //issue book
-            $qy1=$this->conn->prepare("INSERT INTO tblissuedbookdetails SET StudentId=:student AND BookId=:bookid");
-            $qy1->execute(['id'=>$datas['id'],'student'=>$datas['studentid'],'bookid'=>$reservationInfo['BookId']]);
-            if($qy1->rowCount()>1){
+            $qy1=$this->conn->prepare("INSERT INTO tblissuedbookdetails SET StudentId=:student,BookId=:bookid");
+            $qy1->execute(['student'=>$datas['studentid'],'bookid'=>$reservationInfo['BookId']]);
+            if($qy1->rowCount()>0){
                 //delete from reservation
-                $qy2=$this->conn->prepare("DELETE FROM tblreservedbooks where id=:id AND StudentId=:student");
-                $qy2->execute(['id'=>$datas['id'],'student'=>$datas['studentid']]);
-
+                $qy2=$this->conn->prepare("DELETE FROM tblreservedbooks where id=:id");
+                $qy2->execute(['id'=>$datas['id']]);
             }
         }else {
             $feed = ['status'=>'fail','message'=>"<div class='alert alert-danger'>Can't find reservation</div>"];

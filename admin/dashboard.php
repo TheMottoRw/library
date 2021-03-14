@@ -66,7 +66,8 @@ $listdbooks=$query->rowCount();
                       <div class="alert alert-info back-widget-set text-center">
                             <i class="fa fa-bars fa-5x"></i>
 <?php 
-$sql1 ="SELECT id from tblissuedbookdetails ";
+//$sql1 ="SELECT id from tblissuedbookdetails ";
+$sql1 ="SELECT tblstudents.FullName,tblbooks.id as book_id,tblbooks.BookPrice,tblbooks.BookName,tblbooks.ISBNNumber,tblissuedbookdetails.IssuesDate,tblissuedbookdetails.ReturnDate,tblissuedbookdetails.RetrunStatus,tblissuedbookdetails.fine,tblissuedbookdetails.id as rid,DATE_ADD(LEFT(tblissuedbookdetails.IssuesDate,10), INTERVAL 3 DAY) AS submission_date from  tblissuedbookdetails join tblstudents on tblstudents.StudentId=tblissuedbookdetails.StudentId join tblbooks on tblbooks.id=tblissuedbookdetails.BookId order by tblissuedbookdetails.id desc ";
 $query1 = $dbh -> prepare($sql1);
 $query1->execute();
 $results1=$query1->fetchAll(PDO::FETCH_OBJ);
@@ -99,8 +100,8 @@ $returnedbooks=$query2->rowCount();
                       <div class="alert alert-danger back-widget-set text-center">
                             <i class="fa fa-users fa-5x"></i>
                             <?php 
-$sql3 ="SELECT id from tblstudents ";
-$query3 = $dbh -> prepare($sql1);
+$sql3 ="SELECT * from tblstudents ";
+$query3 = $dbh -> prepare($sql3);
 $query3->execute();
 $results3=$query3->fetchAll(PDO::FETCH_OBJ);
 $regstds=$query3->rowCount();
@@ -120,15 +121,15 @@ $regstds=$query3->rowCount();
                       <div class="alert alert-success back-widget-set text-center">
                             <i class="fa fa-user fa-5x"></i>
 <?php 
-$sq4 ="SELECT id from tblauthors ";
-$query4 = $dbh -> prepare($sql);
+$sq4 ="SELECT * from tblauthors ";
+$query4 = $dbh -> prepare($sq4);
 $query4->execute();
-$results4=$query4->fetchAll(PDO::FETCH_OBJ);
+$results4=$query4->fetchAll(PDO::FETCH_ASSOC);
 $listdathrs=$query4->rowCount();
 ?>
 
 
-                            <h3><?php echo htmlentities($listdathrs);?></h3>
+                            <h3><?php echo $listdathrs;?></h3>
                       Authors Listed
                         </div>
                     </div>
@@ -143,7 +144,7 @@ $listdathrs=$query4->rowCount();
 
 
 <?php 
-$sql ="SELECT id from tblbooks ";
+$sql ="SELECT id from tblreservedbooks ";
 $query = $dbh -> prepare($sql);
 $query->execute();
 $results=$query->fetchAll(PDO::FETCH_OBJ);
@@ -163,9 +164,9 @@ $listdbooks=$query->rowCount();
 
 <?php 
 $sql5 ="SELECT id from tblcategory ";
-$query5 = $dbh -> prepare($sql1);
+$query5 = $dbh -> prepare($sql5);
 $query5->execute();
-$results5=$query5->fetchAll(PDO::FETCH_OBJ);
+$results5=$query5->fetchAll(PDO::FETCH_ASSOC);
 $listdcats=$query5->rowCount();
 ?>
 

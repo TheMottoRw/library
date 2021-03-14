@@ -33,7 +33,7 @@ class Broadcast
         $message = $datas['message'];
         $students = $this->getStudents();
         foreach ($students as $student) {
-            if ($student['EmailId'] == 'mnzroger@gmail.com') {
+            if ($student['EmailId'] == 'mnzroger@gmail.com' || $student['EmailId'] == 'kubarushaa@gmail.com') {
                echo $this->sendEmail($student['EmailId'], $student['FullName'], $title, $message);
             }
         }
@@ -55,7 +55,7 @@ class Broadcast
             $mail->Port = 587;
             $mail->Host = "smtp.gmail.com";
             $mail->Username = "hasua.mr@gmail.com";
-            $mail->Password = "Roger2709";
+            $mail->Password = "Roger@2709";
 
             $mail->IsHTML(true);
             $mail->AddAddress($to, $toName);

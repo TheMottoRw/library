@@ -59,8 +59,8 @@ Attendance
     }
     ?>
 <div class="form-group">
-<label>Registration Number</label>
-<input class="form-control" type="text" name="cardno" minlength="9" maxlength="9" autocomplete="off"  required pattern="[R,P,r,p,1,2,3,4,5,6,7,8,9,0]*"/>
+<label>Library card number</label>
+<input class="form-control" type="text" name="cardno" minlength="9" maxlength="9" autocomplete="off"  required />
 </div>
 
 <button type="submit" name="create" class="btn btn-info">Add </button>

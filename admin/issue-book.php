@@ -20,7 +20,7 @@ if (strlen($_SESSION['alogin']) == 0) {
         $sql0->execute(['status' => 'available', 'id' => $bookid]);
 
         $lastInsertId = $dbh->lastInsertId();
-        if ($lastInsertId) {
+        if ($query->rowCount()>0) {
             $_SESSION['msg'] = "Book is issued successfully!!";
             header('location:manage-issued-books.php');
         } else {

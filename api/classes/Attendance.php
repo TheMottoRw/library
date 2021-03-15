@@ -7,7 +7,7 @@ class Attendance{
         $this->conn = $db->getInstance();
     }
     function get($datas){
-        $qy=$this->conn->prepare("SELECT a.*,s.FullName,s.MobileNumber FROM attendance a INNER JOIN tblstudents s ON s.StudentId=a.StudentId");
+        $qy=$this->conn->prepare("SELECT a.*,s.FullName,s.MobileNumber FROM attendance a INNER JOIN tblstudents s ON s.StudentId=a.StudentId ORDER by a.id DESC");
         $qy->execute();
         return $qy->fetchAll(PDO::FETCH_ASSOC);
     }
